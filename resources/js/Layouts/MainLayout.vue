@@ -50,41 +50,38 @@
               Beranda
             </Link>
 
-            <Link href="/profil" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/profil') }">
-              Profil Sekolah
-            </Link>
+            <!-- Profil Dropdown -->
+            <div class="relative group">
+              <button class="px-3 py-2 flex items-center gap-1 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': ['/profil', '/guru-staf', '/fasilitas', '/prestasi'].some(path => $page.url.startsWith(path)) }">
+                Profil
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div class="absolute left-0 mt-0 pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div class="bg-white border border-slate-100 rounded-xl shadow-xl py-2">
+                  <Link href="/profil" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Profil Sekolah</Link>
+                  <Link href="/guru-staf" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Guru & Staf</Link>
+                  <Link href="/fasilitas" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Fasilitas</Link>
+                  <Link href="/prestasi" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Prestasi</Link>
+                </div>
+              </div>
+            </div>
 
-            <Link href="/berita" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/berita') }">
-              Berita
-            </Link>
-
-            <Link href="/pengumuman" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/pengumuman') }">
-              Pengumuman
-            </Link>
-
-            <Link href="/agenda" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/agenda') }">
-              Agenda
-            </Link>
-
-            <Link href="/galeri" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/galeri') }">
-              Galeri
-            </Link>
-
-            <Link href="/guru-staf" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/guru-staf') }">
-              Guru & Staf
-            </Link>
-
-            <Link href="/fasilitas" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/fasilitas') }">
-              Fasilitas
-            </Link>
-
-            <Link href="/prestasi" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/prestasi') }">
-              Prestasi
-            </Link>
-
-            <Link href="/dokumen" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/dokumen') }">
-              Dokumen
-            </Link>
+            <!-- Informasi Dropdown -->
+            <div class="relative group">
+              <button class="px-3 py-2 flex items-center gap-1 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': ['/berita', '/pengumuman', '/agenda', '/galeri', '/dokumen'].some(path => $page.url.startsWith(path)) }">
+                Informasi
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <div class="absolute left-0 mt-0 pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <div class="bg-white border border-slate-100 rounded-xl shadow-xl py-2">
+                  <Link href="/berita" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Berita Terkini</Link>
+                  <Link href="/pengumuman" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Pengumuman</Link>
+                  <Link href="/agenda" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Agenda Kegiatan</Link>
+                  <Link href="/galeri" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Galeri Foto</Link>
+                  <Link href="/dokumen" class="block px-4 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">Dokumen Publik</Link>
+                </div>
+              </div>
+            </div>
 
             <Link href="/kontak" class="px-3 py-2 rounded-lg hover:text-blue-600 hover:bg-blue-50/80 transition-all" :class="{ 'text-blue-600 font-bold bg-blue-50': $page.url.startsWith('/kontak') }">
               Kontak

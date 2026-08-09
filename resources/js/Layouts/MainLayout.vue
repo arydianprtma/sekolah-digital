@@ -12,11 +12,13 @@
           <span class="hidden md:inline text-slate-300">NPSN: {{ schoolProfile?.npsn || '10203040' }}</span>
         </div>
         <div class="flex items-center gap-4">
-          <a :href="schoolProfile?.phone ? 'tel:' + schoolProfile.phone : '#'" class="hover:text-blue-200 transition-colors">
-            📞 {{ schoolProfile?.phone || '(021) 555-0199' }}
+          <a :href="schoolProfile?.phone ? 'tel:' + schoolProfile.phone : '#'" class="flex items-center gap-1.5 hover:text-blue-200 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+            {{ schoolProfile?.phone || '(021) 555-0199' }}
           </a>
-          <a :href="schoolProfile?.email ? 'mailto:' + schoolProfile.email : '#'" class="hidden sm:inline hover:text-blue-200 transition-colors">
-            ✉️ {{ schoolProfile?.email || 'info@sekolah.digital' }}
+          <a :href="schoolProfile?.email ? 'mailto:' + schoolProfile.email : '#'" class="hidden sm:flex items-center gap-1.5 hover:text-blue-200 transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            {{ schoolProfile?.email || 'info@sekolah.digital' }}
           </a>
           <a href="/portal" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-0.5 rounded font-semibold transition-all hover:shadow">
             Portal Admin →

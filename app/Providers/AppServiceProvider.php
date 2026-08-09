@@ -20,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability, $arguments) {
+            // Bypass penuh untuk Super Admin atau admin
+            if ($user->hasRole('Super Admin') || $user->hasRole('admin')) {
+                return true;
+            }
+
             $writeAbilities = [
                 'create', 'update', 'delete', 'deleteAny', 
                 'forceDelete', 'forceDeleteAny', 'restore', 'restoreAny', 'reorder'

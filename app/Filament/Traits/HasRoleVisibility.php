@@ -24,6 +24,11 @@ trait HasRoleVisibility
             return false;
         }
 
+        // Bypass untuk Super Admin
+        if ($user->hasRole('Super Admin') || $user->hasRole('admin')) {
+            return true;
+        }
+
         $roles = static::getAllowedRoles();
 
         // Super admin (role 'admin' atau tidak punya role = akses semua)

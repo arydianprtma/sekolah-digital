@@ -29,7 +29,7 @@ class ManageSettings extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasRole('admin') ?? false;
+        return auth()->user()?->hasRole('Super Admin') || auth()->user()?->hasRole('admin');
     }
 
     public ?array $data = [];

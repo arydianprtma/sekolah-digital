@@ -89,6 +89,7 @@ class LearningMaterialResource extends Resource
                     ->default('-'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);

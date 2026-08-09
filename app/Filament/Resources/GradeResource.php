@@ -120,6 +120,7 @@ class GradeResource extends Resource
                     ->relationship('subject', 'nama_mapel'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);

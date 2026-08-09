@@ -89,6 +89,7 @@ class AssignmentResource extends Resource
                     ->counts('submissions'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);

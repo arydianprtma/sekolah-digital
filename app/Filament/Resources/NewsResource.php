@@ -7,6 +7,7 @@ use App\Models\News;
 use Filament\Forms;
 use Filament\Schemas\Components as SchemaComponents;
 use Filament\Schemas\Schema;
+use App\Filament\Traits\HasRoleVisibility;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,6 +16,10 @@ use Illuminate\Support\Str;
 
 class NewsResource extends Resource
 {
+    use HasRoleVisibility;
+
+    protected static array $allowedRoles = ['admin'];
+
     protected static ?string $model = News::class;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-newspaper';

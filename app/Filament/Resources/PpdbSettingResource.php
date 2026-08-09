@@ -7,12 +7,17 @@ use App\Models\PpdbSetting;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Schemas\Schema;
+use App\Filament\Traits\HasRoleVisibility;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class PpdbSettingResource extends Resource
 {
+    use HasRoleVisibility;
+
+    protected static array $allowedRoles = ['admin'];
+
     protected static ?string $model = PpdbSetting::class;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-academic-cap';

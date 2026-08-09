@@ -6,12 +6,17 @@ use App\Filament\Resources\AuditLogResource\Pages;
 use App\Models\AuditLog;
 use Filament\Schemas\Components as SchemaComponents;
 use Filament\Schemas\Schema;
+use App\Filament\Traits\HasRoleVisibility;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
 class AuditLogResource extends Resource
 {
+    use HasRoleVisibility;
+
+    protected static array $allowedRoles = ['admin'];
+
     protected static ?string $model = AuditLog::class;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-list';

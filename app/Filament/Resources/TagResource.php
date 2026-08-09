@@ -6,6 +6,7 @@ use App\Filament\Resources\TagResource\Pages;
 use App\Models\Tag;
 use Filament\Forms;
 use Filament\Schemas\Schema;
+use App\Filament\Traits\HasRoleVisibility;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,6 +15,10 @@ use Illuminate\Support\Str;
 
 class TagResource extends Resource
 {
+    use HasRoleVisibility;
+
+    protected static array $allowedRoles = ['admin'];
+
     protected static ?string $model = Tag::class;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-tag';

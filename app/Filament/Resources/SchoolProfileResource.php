@@ -7,6 +7,7 @@ use App\Models\SchoolProfile;
 use Filament\Forms;
 use Filament\Schemas\Components as SchemaComponents;
 use Filament\Schemas\Schema;
+use App\Filament\Traits\HasRoleVisibility;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -14,6 +15,10 @@ use Filament\Actions;
 
 class SchoolProfileResource extends Resource
 {
+    use HasRoleVisibility;
+
+    protected static array $allowedRoles = ['admin'];
+
     protected static ?string $model = SchoolProfile::class;
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-academic-cap';

@@ -18,7 +18,7 @@ class AchievementResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin'];
+    protected static array $allowedRoles = ['admin', 'operator'];
 
     protected static ?string $model = Achievement::class;
 

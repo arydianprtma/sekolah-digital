@@ -16,7 +16,7 @@ class ClassroomResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin', 'guru'];
+    protected static array $allowedRoles = ['admin', 'guru', 'orang_tua'];
 
     protected static ?string $model = Classroom::class;
 
@@ -89,8 +89,10 @@ class ClassroomResource extends Resource
                     ->counts('students'),
             ])
             ->actions([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+                Actions\EditAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
+                Actions\DeleteAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
             ]);
     }
 
@@ -101,5 +103,46 @@ class ClassroomResource extends Resource
             'create' => Pages\CreateClassroom::route('/create'),
             'edit'   => Pages\EditClassroom::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user && $user->hasRole('orang_tua') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            $studentIds = \App\Models\StudentParent::where('user_id', $user->id)->pluck('student_id');
+            $classroomIds = \App\Models\Student::whereIn('id', $studentIds)->pluck('classroom_id');
+            $query->whereIn('id', $classroomIds);
+        }
+
+        return $query;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
     }
 }

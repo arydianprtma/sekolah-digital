@@ -18,7 +18,7 @@ class AlbumResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin'];
+    protected static array $allowedRoles = ['admin', 'operator', 'editor'];
 
     protected static ?string $model = Album::class;
 

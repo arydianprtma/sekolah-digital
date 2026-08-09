@@ -17,7 +17,7 @@ class CategoryResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin'];
+    protected static array $allowedRoles = ['admin', 'editor'];
 
     protected static ?string $model = Category::class;
 

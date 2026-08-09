@@ -19,7 +19,7 @@ class GradeResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin', 'guru', 'siswa'];
+    protected static array $allowedRoles = ['admin', 'guru', 'siswa', 'orang_tua'];
 
     protected static ?string $model = Grade::class;
 
@@ -120,7 +120,7 @@ class GradeResource extends Resource
                     ->relationship('subject', 'nama_mapel'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);
@@ -148,9 +148,8 @@ class GradeResource extends Resource
 
         // Orang tua: lihat nilai anak mereka
         if ($user && $user->hasRole('orang_tua')) {
-            $parent     = StudentParent::where('user_id', $user->id)->first();
-            $studentId  = $parent?->student_id ?? 0;
-            return $query->where('student_id', $studentId);
+            $studentIds = StudentParent::where('user_id', $user->id)->pluck('student_id');
+            return $query->whereIn('student_id', $studentIds);
         }
 
         return $query;

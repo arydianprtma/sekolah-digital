@@ -18,7 +18,7 @@ class NewsResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin'];
+    protected static array $allowedRoles = ['admin', 'editor', 'author'];
 
     protected static ?string $model = News::class;
 

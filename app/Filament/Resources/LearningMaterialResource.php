@@ -37,17 +37,42 @@ class LearningMaterialResource extends Resource
         return $form->schema([
             Forms\Components\Select::make('subject_id')
                 ->label('Mata Pelajaran')
-                ->relationship('subject', 'nama_mapel')
+                ->relationship(
+                    name: 'subject', 
+                    titleAttribute: 'nama_mapel',
+                    modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query) {
+                        $user = auth()->user();
+                        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+                            $subjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id');
+                            return $query->whereIn('id', $subjectIds);
+                        }
+                        return $query;
+                    }
+                )
                 ->required(),
 
             Forms\Components\Select::make('classroom_id')
                 ->label('Kelas')
-                ->relationship('classroom', 'nama_kelas')
+                ->relationship(
+                    name: 'classroom', 
+                    titleAttribute: 'nama_kelas',
+                    modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query) {
+                        $user = auth()->user();
+                        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+                            $classroomIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('classroom_id');
+                            return $query->whereIn('id', $classroomIds);
+                        }
+                        return $query;
+                    }
+                )
                 ->required(),
 
             Forms\Components\Select::make('teacher_id')
                 ->label('Guru')
-                ->relationship('teacher', 'name'),
+                ->relationship('teacher', 'name')
+                ->default(fn () => auth()->user()?->hasRole('guru') ? auth()->id() : null)
+                ->disabled(fn () => auth()->user()?->hasRole('guru'))
+                ->dehydrated(),
 
             Forms\Components\TextInput::make('judul')
                 ->label('Judul Materi')
@@ -65,7 +90,13 @@ class LearningMaterialResource extends Resource
 
             Forms\Components\TextInput::make('link_external')
                 ->label('Link Eksternal (Opsional)')
-                ->url(),
+                ->url()
+                ->suffixAction(
+                    \Filament\Actions\Action::make('openLink')
+                        ->icon('heroicon-m-arrow-top-right-on-square')
+                        ->url(fn ($state) => $state, true)
+                        ->visible(fn ($state) => filled($state))
+                ),
         ]);
     }
 
@@ -87,9 +118,17 @@ class LearningMaterialResource extends Resource
                 Tables\Columns\TextColumn::make('teacher.name')
                     ->label('Guru')
                     ->default('-'),
+
+                Tables\Columns\TextColumn::make('link_external')
+                    ->label('Tautan')
+                    ->url(fn ($record) => $record->link_external, true)
+                    ->color('primary')
+                    ->icon('heroicon-o-link')
+                    ->formatStateUsing(fn ($state) => $state ? 'Buka Link' : '-')
+                    ->toggleable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);

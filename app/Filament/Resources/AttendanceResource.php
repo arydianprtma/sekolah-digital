@@ -16,7 +16,7 @@ class AttendanceResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin', 'guru'];
+    protected static array $allowedRoles = ['admin', 'guru', 'orang_tua', 'siswa'];
 
     protected static ?string $model = Attendance::class;
 

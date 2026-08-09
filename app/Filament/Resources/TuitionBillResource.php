@@ -114,7 +114,7 @@ class TuitionBillResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);
@@ -142,9 +142,8 @@ class TuitionBillResource extends Resource
 
         // Orang tua: hanya lihat tagihan anak mereka
         if ($user && $user->hasRole('orang_tua')) {
-            $parent    = StudentParent::where('user_id', $user->id)->first();
-            $studentId = $parent?->student_id ?? 0;
-            return $query->where('student_id', $studentId);
+            $studentIds = StudentParent::where('user_id', $user->id)->pluck('student_id');
+            return $query->whereIn('student_id', $studentIds);
         }
 
         return $query;

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\StudentUserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Schemas\Components as SchemaComponents;
@@ -14,7 +14,7 @@ use Filament\Tables\Table;
 use Filament\Actions;
 use Illuminate\Support\Facades\Hash;
 
-class UserResource extends Resource
+class StudentUserResource extends Resource
 {
     use HasRoleVisibility;
 
@@ -26,9 +26,9 @@ class UserResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Pengaturan Pengguna';
 
-    protected static ?string $modelLabel = 'Pengguna Internal';
+    protected static ?string $modelLabel = 'Akun Siswa';
 
-    protected static ?string $pluralModelLabel = 'Pengguna Internal';
+    protected static ?string $pluralModelLabel = 'Akun Siswa';
 
     protected static ?int $navigationSort = 0;
 
@@ -101,12 +101,17 @@ class UserResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->whereHas('roles', fn ($q) => $q->where('name', 'siswa'));
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListStudentUsers::route('/'),
+            'create' => Pages\CreateStudentUser::route('/create'),
+            'edit' => Pages\EditStudentUser::route('/{record}/edit'),
         ];
     }
 }

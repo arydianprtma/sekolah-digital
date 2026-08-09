@@ -28,7 +28,14 @@ class PortalPanelProvider extends PanelProvider
             ->id('portal')
             ->path('portal')
             ->login()
-            ->brandName('Portal Siswa')
+            ->brandName(fn () => match (true) {
+                auth()->check() && auth()->user()->hasRole('Super Admin') => 'Portal Super Admin',
+                auth()->check() && auth()->user()->hasRole('admin') => 'Portal Admin',
+                auth()->check() && auth()->user()->hasRole('guru') => 'Portal Guru',
+                auth()->check() && auth()->user()->hasRole('siswa') => 'Portal Siswa',
+                auth()->check() && auth()->user()->hasRole('orang_tua') => 'Portal Orang Tua',
+                default => 'Portal Akademik',
+            })
             ->colors([
                 'primary' => Color::Amber,
             ])

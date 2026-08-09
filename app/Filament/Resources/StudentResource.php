@@ -67,7 +67,7 @@ class StudentResource extends Resource
 
                 Forms\Components\Select::make('user_id')
                     ->label('Akun User Login')
-                    ->relationship('user', 'name')
+                    ->relationship('user', 'name', fn (\Illuminate\Database\Eloquent\Builder $query) => $query->whereHas('roles', fn ($q) => $q->where('name', 'siswa')))
                     ->searchable()
                     ->preload(),
 
@@ -90,6 +90,34 @@ class StudentResource extends Resource
             \Filament\Schemas\Components\Section::make('Alamat Siswa')->schema([
                 Forms\Components\Textarea::make('alamat')->label('Alamat Lengkap')->columnSpanFull(),
             ]),
+
+            \Filament\Schemas\Components\Section::make('Informasi Orang Tua / Wali')
+                ->relationship('parent')
+                ->schema([
+                    Forms\Components\Select::make('user_id')
+                        ->label('Akun Login Orang Tua (Opsional)')
+                        ->relationship('user', 'name', fn (\Illuminate\Database\Eloquent\Builder $query) => $query->whereHas('roles', fn ($q) => $q->where('name', 'orang_tua')))
+                        ->searchable()
+                        ->preload(),
+                    Forms\Components\TextInput::make('nama_wali')
+                        ->label('Nama Lengkap Orang Tua / Wali')
+                        ->required(),
+                    Forms\Components\Select::make('hubungan')
+                        ->label('Hubungan dengan Siswa')
+                        ->options([
+                            'Ayah' => 'Ayah',
+                            'Ibu' => 'Ibu',
+                            'Wali' => 'Wali',
+                        ])
+                        ->required(),
+                    Forms\Components\TextInput::make('pekerjaan')
+                        ->label('Pekerjaan'),
+                    Forms\Components\TextInput::make('no_telepon')
+                        ->label('No. Telepon / WhatsApp'),
+                    Forms\Components\Textarea::make('alamat')
+                        ->label('Alamat Orang Tua')
+                        ->columnSpanFull(),
+                ])->columns(2),
         ]);
     }
 
@@ -139,8 +167,10 @@ class StudentResource extends Resource
                     ]),
             ])
             ->actions([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+                Actions\EditAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
+                Actions\DeleteAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
             ]);
     }
 
@@ -165,11 +195,44 @@ class StudentResource extends Resource
 
         // Orang tua: hanya lihat data anak mereka
         if ($user && $user->hasRole('orang_tua')) {
-            $parent    = StudentParent::where('user_id', $user->id)->first();
-            $studentId = $parent?->student_id ?? 0;
-            return $query->where('id', $studentId);
+            $studentIds = StudentParent::where('user_id', $user->id)->pluck('student_id');
+            return $query->whereIn('id', $studentIds);
+        }
+
+        // Guru: hanya lihat siswa di kelas yang diampunya
+        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            $teacherId = $user->teacherStaff?->id;
+            $classroomIds = \App\Models\Schedule::where('teacher_id', $teacherId)->pluck('classroom_id');
+            return $query->whereIn('classroom_id', $classroomIds);
         }
 
         return $query;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
     }
 }

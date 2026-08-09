@@ -79,10 +79,35 @@ class SubjectResource extends Resource
                         'warning' => 'peminatan',
                         'success' => 'muatan_lokal',
                     ]),
+
+                Tables\Columns\TextColumn::make('kelas_list')
+                    ->label('Kelas')
+                    ->badge()
+                    ->separator(', ')
+                    ->getStateUsing(function ($record) {
+                        $user = auth()->user();
+                        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+                            return \App\Models\Schedule::where('subject_id', $record->id)
+                                ->where('teacher_id', $user->id)
+                                ->with('classroom')
+                                ->get()
+                                ->pluck('classroom.nama_kelas')
+                                ->unique()
+                                ->toArray();
+                        }
+                        return \App\Models\Schedule::where('subject_id', $record->id)
+                            ->with('classroom')
+                            ->get()
+                            ->pluck('classroom.nama_kelas')
+                            ->unique()
+                            ->toArray();
+                    }),
             ])
             ->actions([
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+                Actions\EditAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
+                Actions\DeleteAction::make()
+                    ->hidden(fn () => auth()->user() && auth()->user()->hasRole('guru') && !auth()->user()->hasRole('admin') && !auth()->user()->hasRole('Super Admin')),
             ]);
     }
 
@@ -93,5 +118,45 @@ class SubjectResource extends Resource
             'create' => Pages\CreateSubject::route('/create'),
             'edit'   => Pages\EditSubject::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            $subjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id');
+            return $query->whereIn('id', $subjectIds);
+        }
+
+        return $query;
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if ($user && ($user->hasRole('guru') || $user->hasRole('siswa') || $user->hasRole('orang_tua')) && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+            return false;
+        }
+        return true;
     }
 }

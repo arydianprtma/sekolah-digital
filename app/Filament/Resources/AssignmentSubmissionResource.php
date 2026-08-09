@@ -16,7 +16,7 @@ class AssignmentSubmissionResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin', 'guru', 'siswa'];
+    protected static array $allowedRoles = ['admin', 'siswa'];
 
     protected static ?string $model = AssignmentSubmission::class;
 
@@ -75,11 +75,9 @@ class AssignmentSubmissionResource extends Resource
                 ->columnSpanFull()
                 ->hidden(fn () => auth()->user()?->hasRole('siswa')),
 
-            Forms\Components\DateTimePicker::make('submitted_at')
+            Forms\Components\DateTimePicker::make('created_at')
                 ->label('Waktu Pengumpulan')
-                ->default(now())
                 ->disabled()
-                ->dehydrated()
                 ->hidden(fn () => auth()->user()?->hasRole('siswa')),
         ]);
     }
@@ -101,13 +99,13 @@ class AssignmentSubmissionResource extends Resource
                     ->label('Nilai')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('submitted_at')
+                Tables\Columns\TextColumn::make('created_at')
                     ->label('Disubmit Pada')
                     ->dateTime('d M Y H:i')
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);

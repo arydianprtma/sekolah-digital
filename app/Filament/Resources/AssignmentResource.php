@@ -11,6 +11,7 @@ use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Filament\Resources\AssignmentResource\RelationManagers\SubmissionsRelationManager;
 
 class AssignmentResource extends Resource
 {
@@ -37,17 +38,42 @@ class AssignmentResource extends Resource
         return $form->schema([
             Forms\Components\Select::make('subject_id')
                 ->label('Mata Pelajaran')
-                ->relationship('subject', 'nama_mapel')
+                ->relationship(
+                    name: 'subject', 
+                    titleAttribute: 'nama_mapel',
+                    modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query) {
+                        $user = auth()->user();
+                        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+                            $subjectIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('subject_id');
+                            return $query->whereIn('id', $subjectIds);
+                        }
+                        return $query;
+                    }
+                )
                 ->required(),
 
             Forms\Components\Select::make('classroom_id')
                 ->label('Kelas')
-                ->relationship('classroom', 'nama_kelas')
+                ->relationship(
+                    name: 'classroom', 
+                    titleAttribute: 'nama_kelas',
+                    modifyQueryUsing: function (\Illuminate\Database\Eloquent\Builder $query) {
+                        $user = auth()->user();
+                        if ($user && $user->hasRole('guru') && !$user->hasRole('admin') && !$user->hasRole('Super Admin')) {
+                            $classroomIds = \App\Models\Schedule::where('teacher_id', $user->id)->pluck('classroom_id');
+                            return $query->whereIn('id', $classroomIds);
+                        }
+                        return $query;
+                    }
+                )
                 ->required(),
 
             Forms\Components\Select::make('teacher_id')
                 ->label('Guru Pengampu')
-                ->relationship('teacher', 'name'),
+                ->relationship('teacher', 'name')
+                ->default(fn () => auth()->user()?->hasRole('guru') ? auth()->id() : null)
+                ->disabled(fn () => auth()->user()?->hasRole('guru'))
+                ->dehydrated(),
 
             Forms\Components\TextInput::make('judul')
                 ->label('Judul Tugas')
@@ -89,10 +115,17 @@ class AssignmentResource extends Resource
                     ->counts('submissions'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Actions\ViewAction::make(),
                 Actions\EditAction::make(),
                 Actions\DeleteAction::make(),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            SubmissionsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
@@ -100,6 +133,7 @@ class AssignmentResource extends Resource
         return [
             'index'  => Pages\ListAssignments::route('/'),
             'create' => Pages\CreateAssignment::route('/create'),
+            'view'   => Pages\ViewAssignment::route('/{record}'),
             'edit'   => Pages\EditAssignment::route('/{record}/edit'),
         ];
     }

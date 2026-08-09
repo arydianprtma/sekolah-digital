@@ -73,7 +73,8 @@ class LibraryBookResource extends Resource
                 Forms\Components\FileUpload::make('pdf_file')
                     ->label('File PDF E-Book (Opsional)')
                     ->acceptedFileTypes(['application/pdf'])
-                    ->directory('library/pdf'),
+                    ->directory('library/pdf')
+                    ->downloadable(),
             ])->columns(2),
         ]);
     }

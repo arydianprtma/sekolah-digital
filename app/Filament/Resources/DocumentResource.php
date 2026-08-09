@@ -60,6 +60,7 @@ class DocumentResource extends Resource
                             ->label('Berkas Dokumen (PDF, DOCX, XLSX)')
                             ->required()
                             ->directory('documents')
+                            ->downloadable()
                             ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']),
 
                         Forms\Components\TextInput::make('file_size')

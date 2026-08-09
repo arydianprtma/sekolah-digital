@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AssignmentResource\Pages;
+use App\Filament\Resources\LearningMaterialResource\Pages;
 use App\Filament\Traits\HasRoleVisibility;
-use App\Models\Assignment;
+use App\Models\LearningMaterial;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Schemas\Schema;
@@ -12,25 +12,25 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class AssignmentResource extends Resource
+class LearningMaterialResource extends Resource
 {
     use HasRoleVisibility;
 
     protected static array $allowedRoles = ['admin', 'guru', 'siswa'];
 
-    protected static ?string $model = Assignment::class;
+    protected static ?string $model = LearningMaterial::class;
 
-    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
+    protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-book-open';
 
     protected static \UnitEnum|string|null $navigationGroup = 'E-Learning & Konten';
 
-    protected static ?string $navigationLabel = 'Tugas & Materi';
+    protected static ?string $navigationLabel = 'Materi Belajar';
 
-    protected static ?string $modelLabel = 'Tugas';
+    protected static ?string $modelLabel = 'Materi';
 
-    protected static ?string $pluralModelLabel = 'Tugas & Materi';
+    protected static ?string $pluralModelLabel = 'Materi Belajar';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $form): Schema
     {
@@ -46,21 +46,26 @@ class AssignmentResource extends Resource
                 ->required(),
 
             Forms\Components\Select::make('teacher_id')
-                ->label('Guru Pengampu')
+                ->label('Guru')
                 ->relationship('teacher', 'name'),
 
             Forms\Components\TextInput::make('judul')
-                ->label('Judul Tugas')
+                ->label('Judul Materi')
                 ->required(),
 
             Forms\Components\RichEditor::make('deskripsi')
-                ->label('Deskripsi / Soal Tugas')
-                ->fileAttachmentsDirectory('assignments')
+                ->label('Deskripsi')
+                ->fileAttachmentsDirectory('materials')
                 ->columnSpanFull(),
 
-            Forms\Components\DateTimePicker::make('tenggat_waktu')
-                ->label('Batas Pengumpulan')
-                ->required(),
+            Forms\Components\FileUpload::make('file_path')
+                ->label('Berkas Materi (Opsional)')
+                ->directory('materials')
+                ->downloadable(),
+
+            Forms\Components\TextInput::make('link_external')
+                ->label('Link Eksternal (Opsional)')
+                ->url(),
         ]);
     }
 
@@ -69,24 +74,19 @@ class AssignmentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('judul')
-                    ->label('Judul Tugas')
+                    ->label('Judul')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('subject.nama_mapel')
-                    ->label('Mapel'),
+                    ->label('Mata Pelajaran'),
 
                 Tables\Columns\TextColumn::make('classroom.nama_kelas')
                     ->label('Kelas'),
 
-                Tables\Columns\TextColumn::make('tenggat_waktu')
-                    ->label('Tenggat')
-                    ->dateTime('d M Y H:i')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('submissions_count')
-                    ->label('Pengumpulan')
-                    ->counts('submissions'),
+                Tables\Columns\TextColumn::make('teacher.name')
+                    ->label('Guru')
+                    ->default('-'),
             ])
             ->actions([
                 Actions\EditAction::make(),
@@ -97,9 +97,9 @@ class AssignmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListAssignments::route('/'),
-            'create' => Pages\CreateAssignment::route('/create'),
-            'edit'   => Pages\EditAssignment::route('/{record}/edit'),
+            'index'  => Pages\ListLearningMaterials::route('/'),
+            'create' => Pages\CreateLearningMaterial::route('/create'),
+            'edit'   => Pages\EditLearningMaterial::route('/{record}/edit'),
         ];
     }
 }

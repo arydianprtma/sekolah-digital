@@ -63,7 +63,8 @@ class AnnouncementResource extends Resource
 
                         Forms\Components\FileUpload::make('attachment')
                             ->label('Dokumen Lampiran (PDF/Gambar)')
-                            ->directory('pengumuman'),
+                            ->directory('pengumuman')
+                            ->downloadable(),
 
                         Forms\Components\Toggle::make('status')
                             ->label('Status Aktif')

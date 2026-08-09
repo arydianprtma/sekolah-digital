@@ -23,6 +23,11 @@ class AnalyticsDashboard extends Page
 
     protected static ?int $navigationSort = 10;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('admin') ?? false;
+    }
+
     public function getViewData(): array
     {
         $today = now()->toDateString();

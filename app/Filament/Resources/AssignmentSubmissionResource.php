@@ -43,7 +43,16 @@ class AssignmentSubmissionResource extends Resource
             Forms\Components\Select::make('student_id')
                 ->label('Siswa')
                 ->relationship('student', 'nama_lengkap')
-                ->required(),
+                ->required()
+                ->default(function () {
+                    $user = auth()->user();
+                    if ($user && $user->hasRole('siswa')) {
+                        return \App\Models\Student::where('user_id', $user->id)->value('id');
+                    }
+                    return null;
+                })
+                ->disabled(fn () => auth()->user()?->hasRole('siswa'))
+                ->dehydrated(),
 
             Forms\Components\FileUpload::make('file_path')
                 ->label('File Jawaban / Tugas')
@@ -58,15 +67,20 @@ class AssignmentSubmissionResource extends Resource
                 ->label('Nilai')
                 ->numeric()
                 ->minValue(0)
-                ->maxValue(100),
+                ->maxValue(100)
+                ->hidden(fn () => auth()->user()?->hasRole('siswa')),
 
             Forms\Components\Textarea::make('catatan_guru')
                 ->label('Catatan dari Guru')
-                ->columnSpanFull(),
+                ->columnSpanFull()
+                ->hidden(fn () => auth()->user()?->hasRole('siswa')),
 
             Forms\Components\DateTimePicker::make('submitted_at')
                 ->label('Waktu Pengumpulan')
-                ->default(now()),
+                ->default(now())
+                ->disabled()
+                ->dehydrated()
+                ->hidden(fn () => auth()->user()?->hasRole('siswa')),
         ]);
     }
 

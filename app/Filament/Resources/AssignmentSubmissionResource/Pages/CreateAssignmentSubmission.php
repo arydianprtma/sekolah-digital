@@ -9,4 +9,6 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAssignmentSubmission extends CreateRecord
 {
     protected static string $resource = AssignmentSubmissionResource::class;
+
+    protected ?string $heading = 'Pengumpulan Tugas';
 }

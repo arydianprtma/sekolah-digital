@@ -28,6 +28,7 @@ class PortalPanelProvider extends PanelProvider
             ->id('portal')
             ->path('portal')
             ->login()
+            ->brandName('Portal Siswa')
             ->colors([
                 'primary' => Color::Amber,
             ])

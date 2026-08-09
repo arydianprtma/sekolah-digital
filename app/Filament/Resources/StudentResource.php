@@ -5,12 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Traits\HasRoleVisibility;
 use App\Models\Student;
+use App\Models\StudentParent;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentResource extends Resource
 {
@@ -149,5 +151,25 @@ class StudentResource extends Resource
             'create' => Pages\CreateStudent::route('/create'),
             'edit'   => Pages\EditStudent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user  = auth()->user();
+
+        // Siswa: hanya lihat profil data dirinya sendiri
+        if ($user && $user->hasRole('siswa')) {
+            return $query->where('user_id', $user->id);
+        }
+
+        // Orang tua: hanya lihat data anak mereka
+        if ($user && $user->hasRole('orang_tua')) {
+            $parent    = StudentParent::where('user_id', $user->id)->first();
+            $studentId = $parent?->student_id ?? 0;
+            return $query->where('id', $studentId);
+        }
+
+        return $query;
     }
 }

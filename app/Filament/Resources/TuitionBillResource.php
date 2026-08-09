@@ -5,12 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TuitionBillResource\Pages;
 use App\Filament\Traits\HasRoleVisibility;
 use App\Models\TuitionBill;
+use App\Models\Student;
+use App\Models\StudentParent;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TuitionBillResource extends Resource
 {
@@ -123,5 +126,26 @@ class TuitionBillResource extends Resource
             'create' => Pages\CreateTuitionBill::route('/create'),
             'edit'   => Pages\EditTuitionBill::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user  = auth()->user();
+
+        // Siswa: hanya lihat tagihan milik dirinya sendiri
+        if ($user && $user->hasRole('siswa')) {
+            $student = Student::where('user_id', $user->id)->first();
+            return $query->where('student_id', $student?->id ?? 0);
+        }
+
+        // Orang tua: hanya lihat tagihan anak mereka
+        if ($user && $user->hasRole('orang_tua')) {
+            $parent    = StudentParent::where('user_id', $user->id)->first();
+            $studentId = $parent?->student_id ?? 0;
+            return $query->where('student_id', $studentId);
+        }
+
+        return $query;
     }
 }

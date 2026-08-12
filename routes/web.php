@@ -18,6 +18,10 @@ Route::get('/berita/{slug}', [PublicController::class, 'beritaShow'])->name('ber
 
 Route::get('/pengumuman', [PublicController::class, 'pengumumanIndex'])->name('pengumuman.index');
 Route::get('/pengumuman/{slug}', [PublicController::class, 'pengumumanShow'])->name('pengumuman.show');
+Route::get('/pengumuman/{id}/download', [PublicController::class, 'downloadPengumumanAttachment'])->name('pengumuman.download');
+
+Route::get('/dokumen', [PublicController::class, 'dokumenIndex'])->name('dokumen.index');
+Route::get('/dokumen/{id}/download', [PublicController::class, 'downloadDokumen'])->name('dokumen.download');
 
 Route::get('/agenda', [PublicController::class, 'agendaIndex'])->name('agenda.index');
 Route::get('/agenda/{slug}', [PublicController::class, 'agendaShow'])->name('agenda.show');
@@ -32,8 +36,6 @@ Route::get('/fasilitas/{slug}', [PublicController::class, 'fasilitasShow'])->nam
 
 Route::get('/prestasi', [PublicController::class, 'prestasiIndex'])->name('prestasi.index');
 Route::get('/prestasi/{slug}', [PublicController::class, 'prestasiShow'])->name('prestasi.show');
-
-Route::get('/dokumen', [PublicController::class, 'dokumenIndex'])->name('dokumen.index');
 
 Route::get('/kontak', [PublicController::class, 'kontakIndex'])->name('kontak.index');
 Route::post('/kontak', [PublicController::class, 'kontakStore'])->name('kontak.store');

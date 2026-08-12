@@ -30,7 +30,7 @@
             <span class="text-xs text-slate-500">Unduh dokumen resmi terkait pengumuman ini.</span>
           </div>
         </div>
-        <a :href="'/storage/' + announcement.attachment" target="_blank" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm">
+        <a :href="'/pengumuman/' + announcement.id + '/download'" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-sm">
           Unduh File
         </a>
       </div>
@@ -44,6 +44,13 @@ import MainLayout from '@/Layouts/MainLayout.vue';
 defineProps({
   announcement: Object,
 });
+
+const getStorageUrl = (filePath) => {
+  if (!filePath) return '#';
+  if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
+  const cleanPath = filePath.replace(/^\/?storage\//, '');
+  return '/storage/' + cleanPath;
+};
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '';

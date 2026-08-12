@@ -40,9 +40,7 @@
               {{ doc.file_size || 'PDF / Doc' }}
             </span>
             <a 
-              :href="'/storage/' + doc.file_path" 
-              target="_blank" 
-              download
+              :href="'/dokumen/' + doc.id + '/download'" 
               class="inline-flex items-center gap-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-xs"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -69,4 +67,11 @@ import MainLayout from '@/Layouts/MainLayout.vue'
 defineProps({
   documents: Object
 })
+
+const getStorageUrl = (filePath) => {
+  if (!filePath) return '#';
+  if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
+  const cleanPath = filePath.replace(/^\/?storage\//, '');
+  return '/storage/' + cleanPath;
+}
 </script>

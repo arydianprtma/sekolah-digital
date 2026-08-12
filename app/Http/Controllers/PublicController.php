@@ -296,6 +296,47 @@ class PublicController extends Controller
         ]);
     }
 
+    public function downloadDokumen(int $id)
+    {
+        $document = Document::where('status', true)->findOrFail($id);
+        
+        $filePath = preg_replace('/^\/?(storage|public)\//', '', $document->file_path);
+        $fullPath = storage_path('app/public/' . $filePath);
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File dokumen tidak ditemukan.');
+        }
+
+        $document->increment('download_count');
+
+        $extension = pathinfo($fullPath, PATHINFO_EXTENSION) ?: 'pdf';
+        $cleanFileName = \Illuminate\Support\Str::slug($document->title) . '.' . $extension;
+
+        return response()->download($fullPath, $cleanFileName);
+    }
+
+    public function downloadPengumumanAttachment(int $id)
+    {
+        $announcement = Announcement::where('status', true)->findOrFail($id);
+
+        if (!$announcement->attachment) {
+            abort(404, 'Lampiran pengumuman tidak ditemukan.');
+        }
+
+        $filePath = preg_replace('/^\/?(storage|public)\//', '', $announcement->attachment);
+        $fullPath = storage_path('app/public/' . $filePath);
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File lampiran tidak ditemukan.');
+        }
+
+        $extension = pathinfo($fullPath, PATHINFO_EXTENSION) ?: 'pdf';
+        $cleanFileName = 'Lampiran-' . \Illuminate\Support\Str::slug($announcement->title) . '.' . $extension;
+
+        return response()->download($fullPath, $cleanFileName);
+    }
+
+
     public function kontakIndex(): InertiaResponse
     {
         if ($m = $this->checkMaintenance()) return $m;

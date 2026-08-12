@@ -41,6 +41,73 @@ class PortalPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->sidebarCollapsibleOnDesktop()
+            ->renderHook(
+                'panels::head.done',
+                fn () => \Illuminate\Support\Facades\Blade::render('
+                    <style>
+                        /* Synchronized High-Specificity Jelly Elastic Bounce for Sidebar & Main Content */
+                        html body div.fi-layout aside.fi-sidebar,
+                        html body div.fi-layout aside[class*="fi-sidebar"] {
+                            transition: width 0.55s cubic-bezier(0.68, -0.6, 0.27, 1.6), 
+                                        transform 0.55s cubic-bezier(0.68, -0.6, 0.27, 1.6),
+                                        margin 0.55s cubic-bezier(0.68, -0.6, 0.27, 1.6) !important;
+                        }
+
+                        html body div.fi-layout main.fi-main,
+                        html body div.fi-layout header.fi-topbar {
+                            transition: margin-left 0.55s cubic-bezier(0.68, -0.6, 0.27, 1.6),
+                                        padding-left 0.55s cubic-bezier(0.68, -0.6, 0.27, 1.6) !important;
+                        }
+
+                        /* Animasi Bouncy Icon & Item Menu */
+                        html body div.fi-layout aside.fi-sidebar a.fi-sidebar-item-btn,
+                        html body div.fi-layout aside.fi-sidebar button.fi-sidebar-item-btn,
+                        html body div.fi-layout aside.fi-sidebar .fi-sidebar-item-btn {
+                            transition: background-color 0.2s ease, 
+                                        color 0.2s ease, 
+                                        transform 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6) !important;
+                        }
+
+                        html body div.fi-layout aside.fi-sidebar .fi-sidebar-item-btn:hover {
+                            transform: translateX(8px) scale(1.02) !important;
+                        }
+
+                        html body div.fi-layout aside.fi-sidebar .fi-sidebar-item-btn:active {
+                            transform: scale(0.92) !important;
+                        }
+
+                        /* Keyframes animasi Jelly / Agar-agar pada ikon saat di-hover */
+                        @keyframes jellyBounceAnim {
+                            0% { transform: scale(1, 1); }
+                            30% { transform: scale(1.3, 0.7); }
+                            50% { transform: scale(0.75, 1.25); }
+                            75% { transform: scale(1.15, 0.85); }
+                            90% { transform: scale(0.95, 1.05); }
+                            100% { transform: scale(1, 1); }
+                        }
+
+                        html body div.fi-layout aside.fi-sidebar .fi-sidebar-item-btn:hover svg {
+                            animation: jellyBounceAnim 0.6s ease-in-out !important;
+                        }
+
+                        /* Tombol Toggle Sidebar Membal */
+                        html body button[x-on\:click*="sidebar"],
+                        html body .fi-sidebar-header button,
+                        html body .fi-topbar button {
+                            transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6) !important;
+                        }
+                        html body button[x-on\:click*="sidebar"]:hover,
+                        html body .fi-sidebar-header button:hover {
+                            transform: scale(1.2) rotate(12deg) !important;
+                        }
+                        html body button[x-on\:click*="sidebar"]:active,
+                        html body .fi-sidebar-header button:active {
+                            transform: scale(0.85) rotate(-12deg) !important;
+                        }
+                    </style>
+                ')
+            )
             ->navigationGroups([
                 'Akademik & Sekolah',
                 'E-Learning & Pembelajaran',

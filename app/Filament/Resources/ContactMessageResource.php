@@ -3,7 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactMessageResource\Pages;
+use App\Filament\Resources\ContactMessageResource\RelationManagers;
+use App\Mail\ReplyContactMessageMail;
 use App\Models\ContactMessage;
+use App\Models\ContactMessageReply;
 use Filament\Forms;
 use Filament\Schemas\Components as SchemaComponents;
 use Filament\Schemas\Schema;
@@ -12,12 +15,14 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class ContactMessageResource extends Resource
 {
     use HasRoleVisibility;
 
-    protected static array $allowedRoles = ['admin'];
+    protected static array $allowedRoles = ['Super Admin', 'admin'];
 
     protected static ?string $model = ContactMessage::class;
 
@@ -30,6 +35,17 @@ class ContactMessageResource extends Resource
     protected static ?string $pluralModelLabel = 'Kotak Masuk Pesan';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = ContactMessage::where('status', 'baru')->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -52,10 +68,10 @@ class ContactMessageResource extends Resource
                         Forms\Components\Select::make('status')
                             ->label('Status Pesan')
                             ->options([
-                                'baru' => 'Baru',
-                                'dibaca' => 'Dibaca',
-                                'dibalas' => 'Sudah Dibalas',
-                                'diarsipkan' => 'Diarsipkan',
+                                'baru'        => 'Baru',
+                                'dibaca'      => 'Sudah Dibaca',
+                                'dibalas'     => 'Sudah Dibalas',
+                                'diarsipkan'  => 'Diarsipkan',
                             ])
                             ->required(),
 
@@ -95,21 +111,69 @@ class ContactMessageResource extends Resource
 
                 Tables\Columns\TextColumn::make('subject')
                     ->label('Subjek')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(40),
+
+                Tables\Columns\TextColumn::make('replies_count')
+                    ->counts('replies')
+                    ->label('Balasan')
+                    ->badge()
+                    ->color('info'),
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'baru'       => 'Baru',
+                        'dibaca'     => 'Sudah Dibaca',
+                        'dibalas'    => 'Sudah Dibalas',
+                        'diarsipkan' => 'Diarsipkan',
+                        default      => $state,
+                    })
                     ->color(fn (string $state): string => match ($state) {
-                        'baru' => 'danger',
-                        'dibaca' => 'warning',
-                        'dibalas' => 'success',
-                        default => 'gray',
+                        'baru'       => 'danger',
+                        'dibaca'     => 'warning',
+                        'dibalas'    => 'success',
+                        'diarsipkan' => 'gray',
+                        default      => 'gray',
                     }),
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Actions\EditAction::make(),
+                Actions\Action::make('balas')
+                    ->label('Balas')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('primary')
+                    ->form([
+                        Forms\Components\Textarea::make('body')
+                            ->label('Isi Balasan')
+                            ->required()
+                            ->rows(5)
+                            ->placeholder('Tulis balasan Anda di sini...'),
+                    ])
+                    ->action(function (ContactMessage $record, array $data): void {
+                        ContactMessageReply::create([
+                            'contact_message_id' => $record->id,
+                            'user_id'            => auth()->id(),
+                            'body'               => $data['body'],
+                        ]);
+
+                        Mail::to($record->email)->send(new ReplyContactMessageMail(
+                            contactMessage: $record,
+                            replyBody: $data['body'],
+                            repliedBy: auth()->user()->name,
+                        ));
+
+                        $record->markAsReplied();
+
+                        Notification::make()
+                            ->title('Balasan berhasil dikirim')
+                            ->body('Email balasan telah dikirim ke ' . $record->email)
+                            ->success()
+                            ->send();
+                    }),
+
+                Actions\EditAction::make()->label('Detail'),
                 Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -119,11 +183,18 @@ class ContactMessageResource extends Resource
             ]);
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\RepliesRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListContactMessages::route('/'),
-            'edit' => Pages\EditContactMessage::route('/{record}/edit'),
+            'edit'  => Pages\EditContactMessage::route('/{record}/edit'),
         ];
     }
 }

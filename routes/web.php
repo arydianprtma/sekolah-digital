@@ -46,3 +46,5 @@ Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap')
 Route::get('/ppdb', [PublicController::class, 'ppdbIndex'])->name('ppdb.index');
 Route::get('/pencarian', [PublicController::class, 'pencarianIndex'])->name('pencarian.index');
 Route::post('/newsletter/daftar', [PublicController::class, 'newsletterDaftar'])->name('newsletter.daftar');
+
+Route::get('/portal/report-cards/{id}/pdf', [\App\Http\Controllers\ReportCardController::class, 'downloadPdf'])->middleware('auth')->name('report-cards.pdf');

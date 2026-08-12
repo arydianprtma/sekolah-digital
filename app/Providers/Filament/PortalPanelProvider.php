@@ -28,6 +28,7 @@ class PortalPanelProvider extends PanelProvider
             ->id('portal')
             ->path('portal')
             ->login()
+            ->profile(\App\Filament\Pages\CustomEditProfile::class, isSimple: false)
             ->brandName(fn () => match (true) {
                 auth()->check() && auth()->user()->hasRole('Super Admin') => 'Portal Super Admin',
                 auth()->check() && auth()->user()->hasRole('admin') => 'Portal Admin',
@@ -36,6 +37,7 @@ class PortalPanelProvider extends PanelProvider
                 auth()->check() && auth()->user()->hasRole('orang_tua') => 'Portal Orang Tua',
                 default => 'Portal Akademik',
             })
+            ->favicon(null)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -46,9 +48,9 @@ class PortalPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                \App\Filament\Widgets\MaintenanceBannerWidget::class,
                 \App\Filament\Widgets\StatsOverviewWidget::class,
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                \App\Filament\Widgets\WelcomeWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

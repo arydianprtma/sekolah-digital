@@ -12,6 +12,7 @@ class TeacherStaff extends Model
     protected $table = 'teacher_staffs';
 
     protected $fillable = [
+        'user_id',
         'name',
         'nip',
         'nuptk',

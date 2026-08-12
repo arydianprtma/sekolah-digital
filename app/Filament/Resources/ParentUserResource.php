@@ -38,6 +38,17 @@ class ParentUserResource extends Resource
             ->components([
                 SchemaComponents\Section::make('Informasi Pengguna')
                     ->schema([
+                        Forms\Components\FileUpload::make('avatar_url')
+                            ->label('Foto Profil')
+                            ->image()
+                            ->disk('public')
+                            ->directory('avatars')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->avatar()
+                            ->alignCenter()
+                            ->columnSpanFull(),
+
                         Forms\Components\TextInput::make('name')
                             ->label('Nama Lengkap')
                             ->required()
@@ -71,6 +82,12 @@ class ParentUserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar_url')
+                    ->label('Foto')
+                    ->circular()
+                    ->disk('public')
+                    ->defaultImageUrl(fn ($record) => $record->getFilamentAvatarUrl()),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()

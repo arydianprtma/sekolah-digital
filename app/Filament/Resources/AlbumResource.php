@@ -73,7 +73,10 @@ class AlbumResource extends Resource
                                 Forms\Components\FileUpload::make('media_path')
                                     ->label('Berkas Media (Foto/Video)')
                                     ->required()
-                                    ->directory('gallery'),
+                                    ->disk('public')
+                                    ->directory('gallery')
+                                    ->maxSize(20480)
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/quicktime', 'video/webm']),
 
                                 Forms\Components\Select::make('type')
                                     ->label('Tipe')

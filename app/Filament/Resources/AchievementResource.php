@@ -87,7 +87,10 @@ class AchievementResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Foto Dokumentasi / Piagam')
                             ->image()
-                            ->directory('achievements'),
+                            ->disk('public')
+                            ->directory('achievements')
+                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
 
                         Forms\Components\RichEditor::make('description')
                             ->label('Deskripsi Prestasi')

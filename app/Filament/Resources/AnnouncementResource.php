@@ -68,8 +68,11 @@ class AnnouncementResource extends Resource
 
                         Forms\Components\FileUpload::make('attachment')
                             ->label('Dokumen Lampiran (PDF/Gambar)')
+                            ->disk('public')
                             ->directory('pengumuman')
-                            ->downloadable(),
+                            ->downloadable()
+                            ->maxSize(10240)
+                            ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png']),
 
                         Forms\Components\Toggle::make('status')
                             ->label('Status Aktif')

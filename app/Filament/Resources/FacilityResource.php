@@ -54,7 +54,10 @@ class FacilityResource extends Resource
                         Forms\Components\FileUpload::make('primary_image')
                             ->label('Foto Utama')
                             ->image()
-                            ->directory('facilities'),
+                            ->disk('public')
+                            ->directory('facilities')
+                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
 
                         Forms\Components\TagsInput::make('available_features')
                             ->label('Fitur / Kelengkapan (cth: AC, WiFi, Proyektor)'),

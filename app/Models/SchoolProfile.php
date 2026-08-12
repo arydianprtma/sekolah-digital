@@ -24,9 +24,19 @@ class SchoolProfile extends Model
         'principal_name',
         'principal_photo',
         'principal_greeting',
+        'logo',
     ];
 
-    protected $casts = [
-        'mission' => 'array',
-    ];
+    protected $casts = [];
+
+    protected static function booted(): void
+    {
+        static::saved(function () {
+            cache()->forget('school_profile');
+        });
+
+        static::deleted(function () {
+            cache()->forget('school_profile');
+        });
+    }
 }

@@ -68,7 +68,10 @@ class AgendaResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->label('Poster / Pamflet Agenda')
                             ->image()
-                            ->directory('agenda'),
+                            ->disk('public')
+                            ->directory('agenda')
+                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
 
                         Forms\Components\Toggle::make('status')
                             ->label('Status Aktif')

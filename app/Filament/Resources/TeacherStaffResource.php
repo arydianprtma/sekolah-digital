@@ -45,11 +45,16 @@ class TeacherStaffResource extends Resource
                         Forms\Components\Select::make('category')
                             ->label('Kategori Jabatan')
                             ->options([
+                                'yayasan' => 'Yayasan / Pembina',
                                 'kepala_sekolah' => 'Kepala Sekolah',
-                                'wakil_kepala_sekolah' => 'Wakil Kepala Sekolah',
-                                'guru' => 'Guru / Tenaga Pengajar',
-                                'staf' => 'Staf / Tata Usaha',
-                                'tenaga_kependidikan' => 'Tenaga Kependidikan Lainnya',
+                                'waka_kurikulum' => 'Wakil Kepsek Bidang Kurikulum',
+                                'waka_kesiswaan' => 'Wakil Kepsek Bidang Kesiswaan',
+                                'waka_umum' => 'Wakil Kepsek Bidang Sarpras & Umum',
+                                'guru_mapel' => 'Guru Mata Pelajaran',
+                                'guru_kelas' => 'Guru Kelas / Wali Kelas',
+                                'pembina_osis' => 'Pembina OSIS & Ekstrakurikuler',
+                                'admin_tu' => 'Admin & Tata Usaha',
+                                'staf' => 'Staf / Tenaga Kependidikan Lainnya',
                             ])
                             ->default('guru')
                             ->required(),
@@ -75,7 +80,10 @@ class TeacherStaffResource extends Resource
                         Forms\Components\FileUpload::make('photo')
                             ->label('Foto Profil')
                             ->image()
+                            ->disk('public')
                             ->directory('guru-staf')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                             ->imageEditor(),
 
                         Forms\Components\Textarea::make('bio')
@@ -112,11 +120,20 @@ class TeacherStaffResource extends Resource
                     ->label('Kategori')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'yayasan' => 'Yayasan / Pembina',
                         'kepala_sekolah' => 'Kepala Sekolah',
                         'wakil_kepala_sekolah' => 'Wakil Kepsek',
+                        'waka_kurikulum' => 'Waka Kurikulum',
+                        'waka_kesiswaan' => 'Waka Kesiswaan',
+                        'waka_umum' => 'Waka Umum',
                         'guru' => 'Guru',
+                        'guru_mapel' => 'Guru Mapel',
+                        'guru_kelas' => 'Guru Kelas',
+                        'pembina_osis' => 'Pembina OSIS',
+                        'admin_tu' => 'Admin & TU',
                         'staf' => 'Staf',
                         'tenaga_kependidikan' => 'Tenaga Kependidikan',
+                        default => ucfirst(str_replace('_', ' ', $state)),
                     }),
 
                 Tables\Columns\TextColumn::make('position')
@@ -133,11 +150,16 @@ class TeacherStaffResource extends Resource
                 Tables\Filters\SelectFilter::make('category')
                     ->label('Kategori')
                     ->options([
+                        'yayasan' => 'Yayasan / Pembina',
                         'kepala_sekolah' => 'Kepala Sekolah',
-                        'wakil_kepala_sekolah' => 'Wakil Kepsek',
-                        'guru' => 'Guru',
+                        'waka_kurikulum' => 'Waka Kurikulum',
+                        'waka_kesiswaan' => 'Waka Kesiswaan',
+                        'waka_umum' => 'Waka Umum',
+                        'guru_mapel' => 'Guru Mapel',
+                        'guru_kelas' => 'Guru Kelas',
+                        'pembina_osis' => 'Pembina OSIS',
+                        'admin_tu' => 'Admin & TU',
                         'staf' => 'Staf',
-                        'tenaga_kependidikan' => 'Tenaga Kependidikan',
                     ]),
                 Tables\Filters\TernaryFilter::make('status')
                     ->label('Status Aktif'),

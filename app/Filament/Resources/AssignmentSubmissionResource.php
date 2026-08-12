@@ -32,12 +32,85 @@ class AssignmentSubmissionResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    public static function canCreate(): bool
+    {
+        $user = auth()->user();
+
+        if (!$user) return false;
+
+        // Admin dan guru selalu boleh
+        if ($user->hasRole('Super Admin') || $user->hasRole('admin') || $user->hasRole('guru')) {
+            return true;
+        }
+
+        // Siswa boleh membuat pengumpulan tugas
+        if ($user->hasRole('siswa')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+
+        if ($user->hasRole('Super Admin') || $user->hasRole('admin') || $user->hasRole('guru')) {
+            return true;
+        }
+
+        // Siswa hanya boleh edit pengumpulan miliknya sendiri
+        if ($user->hasRole('siswa')) {
+            $studentId = \App\Models\Student::where('user_id', $user->id)->value('id');
+            return $record->student_id === $studentId;
+        }
+
+        return false;
+    }
+
+    public static function canView(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+
+        if ($user->hasRole('Super Admin') || $user->hasRole('admin') || $user->hasRole('guru')) {
+            return true;
+        }
+
+        if ($user->hasRole('siswa')) {
+            $studentId = \App\Models\Student::where('user_id', $user->id)->value('id');
+            return $record->student_id === $studentId;
+        }
+
+        return false;
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = auth()->user();
+        if (!$user) return false;
+
+        if ($user->hasRole('Super Admin') || $user->hasRole('admin') || $user->hasRole('guru')) {
+            return true;
+        }
+
+        // Siswa boleh hapus pengumpulan miliknya sendiri
+        if ($user->hasRole('siswa')) {
+            $studentId = \App\Models\Student::where('user_id', $user->id)->value('id');
+            return $record->student_id === $studentId;
+        }
+
+        return false;
+    }
+
     public static function form(Schema $form): Schema
     {
         return $form->schema([
             Forms\Components\Select::make('assignment_id')
                 ->label('Tugas')
                 ->relationship('assignment', 'judul')
+                ->default(request()->query('assignment_id'))
                 ->required(),
 
             Forms\Components\Select::make('student_id')
@@ -56,8 +129,11 @@ class AssignmentSubmissionResource extends Resource
 
             Forms\Components\FileUpload::make('file_path')
                 ->label('File Jawaban / Tugas')
+                ->disk('public')
                 ->directory('assignment_submissions')
-                ->downloadable(),
+                ->downloadable()
+                ->maxSize(15360)
+                ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/x-zip-compressed', 'application/x-rar-compressed', 'image/jpeg', 'image/png']),
 
             Forms\Components\Textarea::make('catatan_siswa')
                 ->label('Catatan dari Siswa')

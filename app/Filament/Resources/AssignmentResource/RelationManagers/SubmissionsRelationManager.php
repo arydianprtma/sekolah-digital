@@ -7,7 +7,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,6 +16,8 @@ class SubmissionsRelationManager extends RelationManager
     protected static string $relationship = 'submissions';
     
     protected static ?string $title = 'Pengumpulan Tugas';
+    protected static ?string $modelLabel = 'Pengumpulan Tugas';
+    protected static ?string $pluralModelLabel = 'Pengumpulan Tugas';
 
     public function form(Schema $schema): Schema
     {
@@ -37,8 +39,11 @@ class SubmissionsRelationManager extends RelationManager
                 
                 Forms\Components\FileUpload::make('file_path')
                     ->label('File Jawaban / Tugas')
+                    ->disk('public')
                     ->directory('assignment_submissions')
-                    ->downloadable(),
+                    ->downloadable()
+                    ->maxSize(15360)
+                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/x-zip-compressed', 'application/x-rar-compressed', 'image/jpeg', 'image/png']),
 
                 Forms\Components\Textarea::make('catatan_siswa')
                     ->label('Catatan dari Siswa')
@@ -99,40 +104,53 @@ class SubmissionsRelationManager extends RelationManager
                     ->hidden(fn () => auth()->user()?->hasRole('siswa')),
             ])
             ->headerActions([
-                \Filament\Actions\CreateAction::make()
+                \Filament\Actions\Action::make('kumpulkan_tugas_manual')
                     ->label('Kumpulkan Tugas')
-                    ->hidden(function () {
-                        // Jika bukan siswa, sembunyikan CreateAction
-                        if (!auth()->user()?->hasRole('siswa')) return true;
-                        
-                        // Jika siswa sudah pernah mengumpulkan, sembunyikan
-                        $student = \App\Models\Student::where('user_id', auth()->id())->first();
-                        if (!$student) return true;
-                        return $this->getOwnerRecord()->submissions()->where('student_id', $student->id)->exists();
-                    }),
+                    ->url(fn () => \App\Filament\Resources\AssignmentSubmissionResource::getUrl('create') . '?assignment_id=' . $this->getOwnerRecord()->id)
+                    ->visible(fn() => auth()->user()?->hasRole('siswa'))
             ])
             ->recordActions([
-                \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make()
+                    ->modalHeading('Lihat Pengumpulan Tugas'),
                 \Filament\Actions\Action::make('beri_nilai')
                     ->label('Beri Nilai')
                     ->icon('heroicon-o-check-badge')
                     ->color('success')
-                    ->visible(fn () => !auth()->user()?->hasRole('siswa')) // Hanya Guru/Admin
+                    ->visible(fn () => !auth()->user()?->hasRole('siswa'))
+                    ->modalHeading('Penilaian Tugas')
+                    ->modalDescription(fn ($record) => 'Berikan nilai untuk: ' . ($record->student?->nama_lengkap ?? '-'))
+                    ->modalIcon('heroicon-o-academic-cap')
+                    ->modalIconColor('success')
+                    ->fillForm(fn ($record) => [
+                        'nilai' => $record->nilai,
+                        'catatan_guru' => $record->catatan_guru,
+                    ])
                     ->form([
                         Forms\Components\TextInput::make('nilai')
                             ->label('Nilai')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(100)
-                            ->required(),
+                            ->required()
+                            ->suffix('/ 100')
+                            ->placeholder('Masukkan nilai 0-100'),
                         Forms\Components\Textarea::make('catatan_guru')
-                            ->label('Catatan dari Guru (Opsional)'),
+                            ->label('Catatan dari Guru')
+                            ->placeholder('Tuliskan feedback atau catatan untuk siswa...')
+                            ->rows(3),
                     ])
+                    ->modalSubmitActionLabel('Simpan Nilai')
                     ->action(function ($record, array $data): void {
                         $record->update([
                             'nilai' => $data['nilai'],
                             'catatan_guru' => $data['catatan_guru'],
                         ]);
+
+                        \Filament\Notifications\Notification::make()
+                            ->success()
+                            ->title('Nilai Berhasil Disimpan')
+                            ->body('Nilai untuk ' . ($record->student?->nama_lengkap ?? 'siswa') . ' telah diperbarui.')
+                            ->send();
                     }),
             ])
             ->bulkActions([

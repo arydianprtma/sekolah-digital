@@ -56,13 +56,56 @@ class AuditLogResource extends Resource
 
                 Tables\Columns\TextColumn::make('action')
                     ->label('Aktivitas')
+                    ->formatStateUsing(fn (string $state) => match ($state) {
+                        'created'      => 'Tambah Data',
+                        'updated'      => 'Ubah Data',
+                        'deleted'      => 'Hapus Data',
+                        'restored'     => 'Pulihkan Data',
+                        'force_deleted'=> 'Hapus Permanen',
+                        default        => $state,
+                    })
+                    ->badge()
+                    ->color(fn (string $state) => match ($state) {
+                        'created'       => 'success',
+                        'updated'       => 'warning',
+                        'deleted'       => 'danger',
+                        'restored'      => 'info',
+                        'force_deleted' => 'danger',
+                        default         => 'gray',
+                    })
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('model_type')
-                    ->label('Tipe Modul'),
+                    ->label('Tipe Modul')
+                    ->formatStateUsing(fn (string $state) => match ($state) {
+                        'News'                 => 'Berita',
+                        'Announcement'         => 'Pengumuman',
+                        'Agenda'               => 'Agenda / Kegiatan',
+                        'Album'                => 'Album Galeri',
+                        'Achievement'          => 'Prestasi',
+                        'Document'             => 'Dokumen',
+                        'Facility'             => 'Fasilitas',
+                        'LibraryBook'          => 'Buku Perpustakaan',
+                        'LearningMaterial'     => 'Materi Belajar',
+                        'TeacherStaff'         => 'Guru & Tenaga Kependidikan',
+                        'SchoolProfile'        => 'Profil Sekolah',
+                        'Student'              => 'Data Siswa',
+                        'User'                 => 'Pengguna',
+                        'Assignment'           => 'Tugas',
+                        'AssignmentSubmission' => 'Pengumpulan Tugas',
+                        'Grade'                => 'Nilai / Rapor',
+                        'Schedule'             => 'Jadwal Pelajaran',
+                        'Page'                 => 'Halaman Kustom',
+                        'System'               => 'Sistem',
+                        default                => $state,
+                    })
+                    ->badge()
+                    ->color('gray'),
 
                 Tables\Columns\TextColumn::make('ip_address')
-                    ->label('IP Address'),
+                    ->label('IP Address')
+                    ->copyable()
+                    ->copyMessage('IP disalin!'),
             ])
             ->defaultSort('created_at', 'desc');
     }

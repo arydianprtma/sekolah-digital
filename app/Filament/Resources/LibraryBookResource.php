@@ -68,12 +68,17 @@ class LibraryBookResource extends Resource
                 Forms\Components\FileUpload::make('cover_image')
                     ->label('Sampul Buku')
                     ->image()
-                    ->directory('library/cover'),
+                    ->disk('public')
+                    ->directory('library/cover')
+                    ->maxSize(5120)
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
 
                 Forms\Components\FileUpload::make('pdf_file')
                     ->label('File PDF E-Book (Opsional)')
+                    ->disk('public')
                     ->acceptedFileTypes(['application/pdf'])
                     ->directory('library/pdf')
+                    ->maxSize(20480)
                     ->downloadable(),
             ])->columns(2),
         ]);

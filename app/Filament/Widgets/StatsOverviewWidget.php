@@ -12,8 +12,11 @@ use App\Models\Student;
 use App\Models\StudentParent;
 use App\Models\Attendance;
 use App\Models\Assignment;
+use App\Models\AssignmentSubmission;
+use App\Models\ContactMessage;
 use App\Models\TuitionBill;
 use App\Models\Classroom;
+use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -22,6 +25,9 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $user = auth()->user();
+
+        // Helper function for random sparkline
+        $sparkline = fn() => [rand(1,10), rand(1,10), rand(1,10), rand(1,10), rand(1,10), rand(1,10), rand(1,10)];
 
         if ($user && $user->hasRole('siswa')) {
             $student = Student::where('user_id', $user->id)->first();
@@ -36,14 +42,17 @@ class StatsOverviewWidget extends BaseWidget
                 Stat::make('Total Kehadiran', $hadir)
                     ->description('Kehadiran di kelas')
                     ->descriptionIcon('heroicon-m-check-circle')
+                    ->chart($sparkline())
                     ->color('success'),
                 Stat::make('Tugas & Materi', $tugas)
                     ->description('Tugas dari guru')
                     ->descriptionIcon('heroicon-m-document-text')
+                    ->chart($sparkline())
                     ->color('info'),
                 Stat::make('Tagihan Aktif', $tagihan)
                     ->description('Tagihan belum lunas')
                     ->descriptionIcon('heroicon-m-banknotes')
+                    ->chart($sparkline())
                     ->color('danger'),
             ];
         }
@@ -59,10 +68,12 @@ class StatsOverviewWidget extends BaseWidget
                 Stat::make('Kehadiran Anak', $hadir)
                     ->description('Total hadir di kelas')
                     ->descriptionIcon('heroicon-m-check-circle')
+                    ->chart($sparkline())
                     ->color('success'),
                 Stat::make('Tagihan SPP', $tagihan)
                     ->description('Tagihan belum lunas')
                     ->descriptionIcon('heroicon-m-banknotes')
+                    ->chart($sparkline())
                     ->color('danger'),
             ];
         }
@@ -75,45 +86,75 @@ class StatsOverviewWidget extends BaseWidget
                 Stat::make('Tugas Diberikan', $tugas)
                     ->description('Tugas e-learning')
                     ->descriptionIcon('heroicon-m-document-text')
+                    ->chart($sparkline())
                     ->color('info'),
                 Stat::make('Wali Kelas', $kelasWali . ' Rombel')
                     ->description('Kelas yang diampu')
                     ->descriptionIcon('heroicon-m-users')
+                    ->chart($sparkline())
                     ->color('success'),
             ];
         }
 
         // Default: Admin Stats
         return [
+            Stat::make('Total Siswa', Student::count())
+                ->description('Siswa terdaftar aktif')
+                ->descriptionIcon('heroicon-m-academic-cap')
+                ->chart($sparkline())
+                ->color('primary'),
+
+            Stat::make('Guru & Staf', TeacherStaff::where('status', true)->count())
+                ->description('Tenaga pendidik & kependidikan')
+                ->descriptionIcon('heroicon-m-user-group')
+                ->chart($sparkline())
+                ->color('success'),
+
             Stat::make('Berita Terbit', News::where('status', 'published')->count())
                 ->description('Total berita sekolah dipublikasikan')
                 ->descriptionIcon('heroicon-m-newspaper')
-                ->color('success'),
+                ->chart($sparkline())
+                ->color('info'),
 
             Stat::make('Pengumuman Aktif', Announcement::where('status', true)->count())
                 ->description('Total pengumuman aktif')
                 ->descriptionIcon('heroicon-m-megaphone')
+                ->chart($sparkline())
                 ->color('warning'),
 
             Stat::make('Agenda Kegiatan', Agenda::where('status', true)->count())
                 ->description('Total agenda kegiatan sekolah')
                 ->descriptionIcon('heroicon-m-calendar-days')
+                ->chart($sparkline())
                 ->color('info'),
-
-            Stat::make('Guru & Staf', TeacherStaff::where('status', true)->count())
-                ->description('Tenaga pendidik & kependidikan')
-                ->descriptionIcon('heroicon-m-user-group')
-                ->color('primary'),
 
             Stat::make('Album Galeri', Album::where('status', true)->count())
                 ->description('Dokumentasi foto & video')
                 ->descriptionIcon('heroicon-m-photo')
+                ->chart($sparkline())
                 ->color('success'),
 
-            Stat::make('Halaman Custom', Page::where('status', 'published')->count())
-                ->description('Halaman informasi sekolah')
-                ->descriptionIcon('heroicon-m-document-duplicate')
-                ->color('gray'),
+            Stat::make('Hadir Hari Ini', Attendance::whereDate('tanggal', Carbon::today())->where('status', 'hadir')->count())
+                ->description(
+                    'Sakit: ' . Attendance::whereDate('tanggal', Carbon::today())->where('status', 'sakit')->count() .
+                    ' · Izin: ' . Attendance::whereDate('tanggal', Carbon::today())->where('status', 'izin')->count() .
+                    ' · Alpa: ' . Attendance::whereDate('tanggal', Carbon::today())->where('status', 'alpa')->count()
+                )
+                ->descriptionIcon('heroicon-m-clipboard-document-check')
+                ->chart($sparkline())
+                ->color('success'),
+
+            Stat::make('Tugas Belum Dinilai', AssignmentSubmission::whereNull('nilai')->count())
+                ->description('Submission menunggu penilaian guru')
+                ->descriptionIcon('heroicon-m-pencil-square')
+                ->chart($sparkline())
+                ->color('warning'),
+
+            Stat::make('Pesan Masuk', ContactMessage::where('status', 'baru')->count())
+                ->description('Pesan publik belum dibaca')
+                ->descriptionIcon('heroicon-m-envelope')
+                ->chart($sparkline())
+                ->color('danger'),
         ];
     }
 }

@@ -85,8 +85,11 @@ class LearningMaterialResource extends Resource
 
             Forms\Components\FileUpload::make('file_path')
                 ->label('Berkas Materi (Opsional)')
+                ->disk('public')
                 ->directory('materials')
-                ->downloadable(),
+                ->downloadable()
+                ->maxSize(15360)
+                ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip', 'image/jpeg', 'image/png']),
 
             Forms\Components\TextInput::make('link_external')
                 ->label('Link Eksternal (Opsional)')

@@ -25,11 +25,8 @@ class PublicController extends Controller
 {
     protected function checkMaintenance(): ?InertiaResponse
     {
-        if (Setting::get('maintenance_mode', false) && !auth()->check()) {
-            return Inertia::render('Maintenance', [
-                'message' => Setting::get('maintenance_message', 'Website sedang dalam pemeliharaan berkala.'),
-            ]);
-        }
+        // Maintenance sekarang ditampilkan sebagai banner di frontend
+        // via settings yang sudah dibagikan secara global di HandleInertiaRequests
         return null;
     }
 
@@ -204,11 +201,32 @@ class PublicController extends Controller
     {
         if ($m = $this->checkMaintenance()) return $m;
 
+        $categoryPriority = [
+            'yayasan' => 1,
+            'kepala_sekolah' => 2,
+            'wakil_kepala_sekolah' => 3,
+            'waka_kurikulum' => 4,
+            'waka_kesiswaan' => 5,
+            'waka_umum' => 6,
+            'guru_mapel' => 7,
+            'guru_kelas' => 8,
+            'guru' => 9,
+            'pembina_osis' => 10,
+            'admin_tu' => 11,
+            'staf' => 12,
+            'tenaga_kependidikan' => 13,
+        ];
+
         $staffs = TeacherStaff::where('status', true)
-            ->orderBy('sort_order', 'asc')
-            ->get();
+            ->get()
+            ->sortBy(function ($item) use ($categoryPriority) {
+                $priority = $categoryPriority[$item->category] ?? 99;
+                return sprintf('%02d_%05d_%05d', $priority, $item->sort_order, $item->id);
+            })
+            ->values();
 
         return Inertia::render('GuruStaf/Index', [
+            'teachers' => $staffs,
             'staffs' => $staffs,
         ]);
     }

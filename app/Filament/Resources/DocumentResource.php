@@ -64,8 +64,10 @@ class DocumentResource extends Resource
                         Forms\Components\FileUpload::make('file_path')
                             ->label('Berkas Dokumen (PDF, DOCX, XLSX)')
                             ->required()
+                            ->disk('public')
                             ->directory('documents')
                             ->downloadable()
+                            ->maxSize(10240)
                             ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']),
 
                         Forms\Components\TextInput::make('file_size')

@@ -19,17 +19,20 @@
           </div>
         </div>
 
-        <div class="lg:col-span-5 bg-white p-8 rounded-2xl border border-slate-200 shadow-lg space-y-4">
-          <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
-            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-bold text-slate-900">{{ profile?.principal_name || 'Dr. H. Ahmad Dahlan, M.Pd.' }}</h3>
-              <p class="text-xs font-semibold text-blue-600">Kepala Sekolah</p>
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden flex flex-col">
+          <div class="w-full h-80 sm:h-96 bg-slate-900 relative overflow-hidden flex items-center justify-center">
+            <img v-if="profile?.principal_photo" :src="'/storage/' + profile.principal_photo" :alt="profile?.principal_name" class="w-full h-full object-cover object-top" />
+            <div v-else class="w-full h-full bg-gradient-to-tr from-blue-900 via-indigo-900 to-slate-900 flex items-center justify-center text-blue-300">
+              <svg class="w-24 h-24 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </div>
           </div>
-          <div class="text-xs text-slate-600 italic leading-relaxed" v-html="profile?.principal_greeting">
+          <div class="p-6 text-center space-y-3">
+            <div>
+              <h3 class="font-black text-xl text-slate-900 tracking-tight uppercase">{{ profile?.principal_name || 'Dr. H. Ahmad Dahlan, M.Pd.' }}</h3>
+              <p class="text-sm font-semibold text-blue-600 tracking-wider uppercase mt-0.5">- Kepala Sekolah -</p>
+            </div>
+            <div class="text-sm text-slate-600 italic leading-relaxed text-left border-t border-slate-100 pt-3 prose prose-slate max-w-none" v-html="profile?.principal_greeting">
+            </div>
           </div>
         </div>
       </div>
@@ -46,12 +49,14 @@
         <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-md space-y-4">
           <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest block">Langkah Strategis</span>
           <h3 class="text-2xl font-black text-slate-900">Misi Sekolah</h3>
-          <ul v-if="profile?.mission" class="space-y-2 text-sm text-slate-700">
+          <ul v-if="Array.isArray(profile?.mission)" class="space-y-2 text-sm text-slate-700">
             <li v-for="(item, idx) in profile.mission" :key="idx" class="flex items-start gap-2">
               <span class="text-blue-600 font-bold">•</span>
               <span>{{ item }}</span>
             </li>
           </ul>
+          <div v-else-if="profile?.mission" class="text-sm text-slate-700 leading-relaxed prose max-w-none" v-html="profile.mission">
+          </div>
         </div>
       </div>
 

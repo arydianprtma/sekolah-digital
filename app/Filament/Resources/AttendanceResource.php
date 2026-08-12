@@ -51,6 +51,11 @@ class AttendanceResource extends Resource
                 ->label('Mata Pelajaran (opsional)')
                 ->relationship('subject', 'nama_mapel'),
 
+            Forms\Components\Select::make('academic_year_id')
+                ->label('Tahun Ajaran')
+                ->relationship('academicYear', 'tahun_ajaran')
+                ->required(),
+
             Forms\Components\DatePicker::make('tanggal')
                 ->label('Tanggal')
                 ->default(now())

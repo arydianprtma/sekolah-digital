@@ -99,7 +99,10 @@ class NewsResource extends Resource
                                 Forms\Components\FileUpload::make('featured_image')
                                     ->label('Gambar Utama / Thumbnail')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('berita')
+                                    ->maxSize(5120)
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->imageEditor(),
                             ]),
                     ])->columnSpan(1),

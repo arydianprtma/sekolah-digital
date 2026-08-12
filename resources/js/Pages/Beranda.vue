@@ -13,9 +13,8 @@
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
               Mewujudkan Generasi <span class="bg-gradient-to-r from-blue-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">Digital Berprestasi</span>
             </h1>
-            <p class="text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
-              {{ school_profile?.vision || 'Pusat keunggulan pendidikan yang mengintegrasikan kecerdasan intelektual, pembentukan karakter mulia, dan penguasaan teknologi informasi masa depan.' }}
-            </p>
+            <div class="text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal" v-html="school_profile?.vision || 'Pusat keunggulan pendidikan yang mengintegrasikan kecerdasan intelektual, pembentukan karakter mulia, dan penguasaan teknologi informasi masa depan.'">
+            </div>
             <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
               <Link href="/profil" class="px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-base shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all">
                 Jelajahi Profil Sekolah →
@@ -29,18 +28,19 @@
           <div class="lg:col-span-5 relative">
             <div class="relative mx-auto max-w-md lg:max-w-none">
               <div class="absolute -inset-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur-xl opacity-40"></div>
-              <div class="relative bg-slate-900/90 border border-slate-700/80 rounded-2xl p-6 shadow-2xl backdrop-blur-md">
-                <div class="flex items-center gap-4 mb-4">
-                  <div class="w-16 h-16 rounded-full bg-blue-600/30 border-2 border-blue-400 flex items-center justify-center text-blue-300 overflow-hidden">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                  </div>
-                  <div>
-                    <h3 class="text-lg font-bold text-white">{{ school_profile?.principal_name || 'Dr. H. Ahmad Dahlan, M.Pd.' }}</h3>
-                    <p class="text-xs text-blue-300 font-medium">Kepala Sekolah {{ school_profile?.school_name }}</p>
-                  </div>
+              <div class="relative bg-slate-900/90 border border-slate-700/80 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-md flex flex-col">
+                <div class="w-full h-72 sm:h-80 bg-slate-950 relative overflow-hidden flex items-center justify-center">
+                  <img v-if="school_profile?.principal_photo" :src="'/storage/' + school_profile.principal_photo" :alt="school_profile?.principal_name" class="w-full h-full object-cover object-top" />
+                  <img v-else-if="principal?.photo" :src="'/storage/' + principal.photo" :alt="principal?.name" class="w-full h-full object-cover object-top" />
+                  <svg v-else class="w-20 h-20 text-blue-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
-                <div class="text-sm text-slate-300 italic leading-relaxed border-t border-slate-800 pt-4">
-                  "{{ school_profile?.principal_greeting || 'Selamat datang di portal Digital School. Kami berkomitmen mencetak lulusan yang inovatif, berkarakter, dan berdaya saing global.' }}"
+                <div class="p-6 space-y-3">
+                  <div class="border-b border-slate-800 pb-3 text-center">
+                    <h3 class="text-xl font-black text-white tracking-tight uppercase">{{ school_profile?.principal_name || principal?.name || 'Dr. H. Ahmad Dahlan, M.Pd.' }}</h3>
+                    <p class="text-xs text-blue-400 font-semibold uppercase tracking-wider mt-0.5">- Kepala Sekolah -</p>
+                  </div>
+                  <div class="text-sm text-slate-300 italic leading-relaxed pt-1 prose prose-invert max-w-none" v-html="school_profile?.principal_greeting || school_profile?.principal_welcome || 'Selamat datang di portal Digital School. Kami berkomitmen mencetak lulusan yang inovatif, berkarakter, dan berdaya saing global.'">
+                  </div>
                 </div>
               </div>
             </div>

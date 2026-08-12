@@ -38,6 +38,17 @@ class UserResource extends Resource
             ->components([
                 SchemaComponents\Section::make('Informasi Pengguna')
                     ->schema([
+                        Forms\Components\FileUpload::make('avatar_url')
+                            ->label('Foto Profil')
+                            ->image()
+                            ->disk('public')
+                            ->directory('avatars')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                            ->avatar()
+                            ->alignCenter()
+                            ->columnSpanFull(),
+
                         Forms\Components\TextInput::make('name')
                             ->label('Nama Lengkap')
                             ->required()
@@ -71,6 +82,12 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar_url')
+                    ->label('Foto')
+                    ->circular()
+                    ->disk('public')
+                    ->defaultImageUrl(fn ($record) => $record->getFilamentAvatarUrl()),
+
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
                     ->searchable()
@@ -99,6 +116,11 @@ class UserResource extends Resource
                     Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getEloquentQuery()->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', ['siswa', 'orang_tua']));
     }
 
     public static function getPages(): array

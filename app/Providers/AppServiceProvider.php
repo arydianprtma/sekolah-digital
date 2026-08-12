@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Observers\AuditLogObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $writeAbilities = [
-                'create', 'update', 'delete', 'deleteAny', 
+                'create', 'update', 'delete', 'deleteAny',
                 'forceDelete', 'forceDeleteAny', 'restore', 'restoreAny', 'reorder'
             ];
 
@@ -38,8 +39,24 @@ class AppServiceProvider extends ServiceProvider
                     }
 
                     // Pengecualian: Siswa boleh melakukan aksi pada Pengumpulan Tugas (AssignmentSubmission)
-                    if ($user->hasRole('siswa') && $model === \App\Models\AssignmentSubmission::class) {
-                        return null; // Lanjut ke policy default
+                    if ($user->hasRole('siswa') && ltrim($model, '\\') === 'App\\Models\\AssignmentSubmission') {
+                        if ($ability === 'create') {
+                            return true;
+                        }
+
+                        if (isset($arguments[0]) && is_object($arguments[0])) {
+                            $studentId = \App\Models\Student::where('user_id', $user->id)->value('id');
+                            return $arguments[0]->student_id === $studentId;
+                        }
+
+                        return true;
+                    }
+
+                    // Pengecualian untuk Relation Manager: Siswa boleh menambah submission ke Assignment
+                    if ($user->hasRole('siswa') && ltrim($model, '\\') === 'App\\Models\\Assignment') {
+                        if (in_array($ability, ['addAssignmentSubmission', 'createAssignmentSubmission'])) {
+                            return true;
+                        }
                     }
 
                     // Blokir akses CRUD lainnya untuk Siswa & Orang Tua
@@ -47,5 +64,31 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+        // Register AuditLog Observer pada semua model penting
+        $modelsToObserve = [
+            \App\Models\News::class,
+            \App\Models\Announcement::class,
+            \App\Models\Agenda::class,
+            \App\Models\Album::class,
+            \App\Models\Achievement::class,
+            \App\Models\Document::class,
+            \App\Models\Facility::class,
+            \App\Models\LibraryBook::class,
+            \App\Models\LearningMaterial::class,
+            \App\Models\TeacherStaff::class,
+            \App\Models\SchoolProfile::class,
+            \App\Models\Student::class,
+            \App\Models\User::class,
+            \App\Models\Assignment::class,
+            \App\Models\AssignmentSubmission::class,
+            \App\Models\Grade::class,
+            \App\Models\Schedule::class,
+            \App\Models\Page::class,
+        ];
+
+        foreach ($modelsToObserve as $model) {
+            $model::observe(AuditLogObserver::class);
+        }
     }
 }

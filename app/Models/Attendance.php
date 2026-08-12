@@ -11,6 +11,7 @@ class Attendance extends Model
         'student_id',
         'classroom_id',
         'subject_id',
+        'academic_year_id',
         'tanggal',
         'status',
         'catatan',
@@ -33,5 +34,10 @@ class Attendance extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
+    }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
     }
 }

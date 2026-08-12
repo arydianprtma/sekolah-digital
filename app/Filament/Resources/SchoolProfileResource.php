@@ -57,12 +57,18 @@ class SchoolProfileResource extends Resource
                         Forms\Components\FileUpload::make('principal_photo')
                             ->label('Foto Kepala Sekolah')
                             ->image()
-                            ->directory('profil'),
+                            ->disk('public')
+                            ->directory('profil')
+                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']),
 
                         Forms\Components\FileUpload::make('logo')
                             ->label('Logo Sekolah')
                             ->image()
-                            ->directory('profil'),
+                            ->disk('public')
+                            ->directory('profil')
+                            ->maxSize(5120)
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp']),
                     ])->columns(2),
 
                 SchemaComponents\Section::make('Kontak & Alamat')
@@ -85,7 +91,7 @@ class SchoolProfileResource extends Resource
 
                 SchemaComponents\Section::make('Sejarah, Visi, Misi & Sambutan')
                     ->schema([
-                        Forms\Components\RichEditor::make('principal_welcome')
+                        Forms\Components\RichEditor::make('principal_greeting')
                             ->label('Sambutan Kepala Sekolah')
                             ->columnSpanFull(),
 

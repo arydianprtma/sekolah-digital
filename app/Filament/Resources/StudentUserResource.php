@@ -26,11 +26,13 @@ class StudentUserResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Pengaturan Pengguna';
 
+    protected static ?string $parentItem = null;
+
     protected static ?string $modelLabel = 'Akun Siswa';
 
     protected static ?string $pluralModelLabel = 'Akun Siswa';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

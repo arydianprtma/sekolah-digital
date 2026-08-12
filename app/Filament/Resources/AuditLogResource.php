@@ -23,11 +23,13 @@ class AuditLogResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Sistem & Keamanan';
 
+    protected static ?string $parentItem = null;
+
     protected static ?string $modelLabel = 'Audit Log';
 
     protected static ?string $pluralModelLabel = 'Catatan Aktivitas (Audit Log)';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

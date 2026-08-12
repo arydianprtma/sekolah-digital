@@ -27,13 +27,15 @@ class ReportCardResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
 
+    protected static ?string $parentItem = 'Penilaian & Presensi';
+
     protected static ?string $navigationLabel = 'Cetak Rapor';
 
     protected static ?string $modelLabel = 'Rapor';
 
     protected static ?string $pluralModelLabel = 'Data Rapor';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

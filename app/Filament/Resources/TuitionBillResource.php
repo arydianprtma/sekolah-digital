@@ -25,7 +25,9 @@ class TuitionBillResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-banknotes';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Keuangan Sekolah';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Keuangan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Tagihan SPP';
 

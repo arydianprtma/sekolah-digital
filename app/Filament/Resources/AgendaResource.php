@@ -24,13 +24,15 @@ class AgendaResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-calendar';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Agenda';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Media & Publikasi';
 
     protected static ?string $modelLabel = 'Agenda';
 
     protected static ?string $pluralModelLabel = 'Agenda Kegiatan';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

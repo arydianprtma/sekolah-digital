@@ -23,13 +23,15 @@ class TagResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-tag';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Manajemen Berita & Konten';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Berita & Artikel';
 
     protected static ?string $modelLabel = 'Tag';
 
     protected static ?string $pluralModelLabel = 'Tag Berita';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

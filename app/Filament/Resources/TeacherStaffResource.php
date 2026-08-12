@@ -23,13 +23,15 @@ class TeacherStaffResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-user-group';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Identitas Sekolah';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil & Fasilitas';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Guru & Staf';
 
     protected static ?string $pluralModelLabel = 'Guru & Tenaga Kependidikan';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

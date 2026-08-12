@@ -23,13 +23,15 @@ class SchoolProfileResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Identitas Sekolah';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil & Fasilitas';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Profil Sekolah';
 
     protected static ?string $pluralModelLabel = 'Identitas & Profil';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

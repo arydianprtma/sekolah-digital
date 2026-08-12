@@ -24,13 +24,15 @@ class FacilityResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Fasilitas & Prestasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil & Fasilitas';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Fasilitas';
 
     protected static ?string $pluralModelLabel = 'Fasilitas Sekolah';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

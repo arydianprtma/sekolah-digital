@@ -19,11 +19,13 @@ class ManageSettings extends Page implements HasForms
 
     protected static \UnitEnum|string|null $navigationGroup = 'Sistem & Keamanan';
 
+    protected static ?string $parentItem = null;
+
     protected static ?string $title = 'Pengaturan Sistem';
 
     protected static ?string $navigationLabel = 'Pengaturan & Maintenance';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     protected string $view = 'filament.pages.manage-settings';
 

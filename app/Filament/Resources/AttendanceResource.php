@@ -24,13 +24,15 @@ class AttendanceResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
 
+    protected static ?string $parentItem = 'Penilaian & Presensi';
+
     protected static ?string $navigationLabel = 'Absensi & Presensi';
 
     protected static ?string $modelLabel = 'Absensi';
 
     protected static ?string $pluralModelLabel = 'Absensi Siswa';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $form): Schema
     {

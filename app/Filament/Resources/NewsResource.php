@@ -24,13 +24,15 @@ class NewsResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-newspaper';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Manajemen Berita & Konten';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Berita & Artikel';
 
     protected static ?string $modelLabel = 'Berita';
 
     protected static ?string $pluralModelLabel = 'Berita & Artikel';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

@@ -31,11 +31,13 @@ class AcademicYearResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
     
+    protected static ?string $parentItem = 'Manajemen Akademik';
+
     protected static ?string $navigationLabel = 'Tahun Ajaran';
 
     protected static ?string $modelLabel = 'Tahun Ajaran';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'tahun_ajaran';
 

@@ -24,13 +24,15 @@ class AlbumResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-photo';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Galeri & Media';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Media & Publikasi';
 
     protected static ?string $modelLabel = 'Album Galeri';
 
     protected static ?string $pluralModelLabel = 'Album Dokumentasi';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

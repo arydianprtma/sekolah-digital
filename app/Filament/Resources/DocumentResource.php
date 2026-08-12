@@ -24,13 +24,15 @@ class DocumentResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-document-arrow-down';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Pusat Dokumen';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Media & Publikasi';
 
     protected static ?string $modelLabel = 'Dokumen';
 
     protected static ?string $pluralModelLabel = 'Pusat Dokumen Publik';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {

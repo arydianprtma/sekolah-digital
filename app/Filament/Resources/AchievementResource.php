@@ -24,13 +24,15 @@ class AchievementResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-trophy';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Fasilitas & Prestasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Profil & Fasilitas';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Prestasi';
 
     protected static ?string $pluralModelLabel = 'Prestasi Sekolah & Siswa';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {

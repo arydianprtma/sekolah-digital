@@ -22,7 +22,9 @@ class AssignmentSubmissionResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-document-check';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'E-Learning & Konten';
+    protected static \UnitEnum|string|null $navigationGroup = 'E-Learning & Pembelajaran';
+
+    protected static ?string $parentItem = 'Materi & Tugas';
 
     protected static ?string $navigationLabel = 'Pengumpulan Tugas';
 

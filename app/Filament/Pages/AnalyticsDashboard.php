@@ -15,13 +15,15 @@ class AnalyticsDashboard extends Page
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'PPDB & Digital';
+    protected static \UnitEnum|string|null $navigationGroup = 'Sistem & Keamanan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Analytics';
 
     protected static ?string $title = 'Dashboard Analytics';
 
-    protected static ?int $navigationSort = 10;
+    protected static ?int $navigationSort = 2;
 
     public static function canAccess(): bool
     {

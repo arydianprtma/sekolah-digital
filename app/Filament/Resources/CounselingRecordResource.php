@@ -25,7 +25,9 @@ class CounselingRecordResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-chat-bubble-left-ellipsis';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Bimbingan Konseling';
+    protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Catatan BK';
 
@@ -33,7 +35,7 @@ class CounselingRecordResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Catatan Bimbingan Konseling';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 9;
 
     public static function form(Schema $form): Schema
     {

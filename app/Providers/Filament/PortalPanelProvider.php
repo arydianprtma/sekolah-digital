@@ -41,6 +41,15 @@ class PortalPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->navigationGroups([
+                'Akademik & Sekolah',
+                'E-Learning & Pembelajaran',
+                'Informasi & Konten Web',
+                'Profil & Fasilitas',
+                'Layanan & Keuangan',
+                'Pengaturan Pengguna',
+                'Sistem & Keamanan',
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

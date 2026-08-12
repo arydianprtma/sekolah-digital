@@ -26,6 +26,10 @@ class ScheduleResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
 
+    protected static ?string $parentItem = 'Manajemen Akademik';
+
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
 
     protected static ?string $modelLabel = 'Jadwal Pelajaran';

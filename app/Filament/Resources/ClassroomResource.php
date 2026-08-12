@@ -24,13 +24,15 @@ class ClassroomResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
 
+    protected static ?string $parentItem = 'Manajemen Akademik';
+
     protected static ?string $navigationLabel = 'Kelas & Rombel';
 
     protected static ?string $modelLabel = 'Kelas';
 
     protected static ?string $pluralModelLabel = 'Data Kelas';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $form): Schema
     {

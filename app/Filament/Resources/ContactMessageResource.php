@@ -28,13 +28,15 @@ class ContactMessageResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-envelope';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Pesan & Kontak';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Keuangan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Pesan Masuk';
 
     protected static ?string $pluralModelLabel = 'Kotak Masuk Pesan';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     public static function getNavigationBadge(): ?string
     {

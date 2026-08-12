@@ -24,13 +24,15 @@ class PageResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Manajemen Halaman';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Media & Publikasi';
 
     protected static ?string $modelLabel = 'Halaman Statis';
 
     protected static ?string $pluralModelLabel = 'Halaman Custom';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema
     {

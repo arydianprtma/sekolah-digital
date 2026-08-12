@@ -23,7 +23,9 @@ class AssignmentResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'E-Learning & Konten';
+    protected static \UnitEnum|string|null $navigationGroup = 'E-Learning & Pembelajaran';
+
+    protected static ?string $parentItem = 'Materi & Tugas';
 
     protected static ?string $navigationLabel = 'Tugas & Materi';
 
@@ -31,7 +33,7 @@ class AssignmentResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Tugas & Materi';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $form): Schema
     {

@@ -24,13 +24,15 @@ class AnnouncementResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Agenda';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Media & Publikasi';
 
     protected static ?string $modelLabel = 'Pengumuman';
 
     protected static ?string $pluralModelLabel = 'Pengumuman Sekolah';
 
-    protected static ?int $navigationSort = 0;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {

@@ -22,7 +22,9 @@ class NewsletterSubscriberResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-envelope';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'PPDB & Digital';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Keuangan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Daftar Kontak Email';
 
@@ -30,7 +32,7 @@ class NewsletterSubscriberResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Daftar Kontak Email';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Schema $form): Schema
     {

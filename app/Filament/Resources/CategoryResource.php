@@ -23,13 +23,15 @@ class CategoryResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-folder';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Manajemen Berita & Konten';
+    protected static \UnitEnum|string|null $navigationGroup = 'Informasi & Konten Web';
+
+    protected static ?string $parentItem = 'Berita & Artikel';
 
     protected static ?string $modelLabel = 'Kategori';
 
     protected static ?string $pluralModelLabel = 'Kategori Berita';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

@@ -27,13 +27,15 @@ class GradeResource extends Resource
 
     protected static \UnitEnum|string|null $navigationGroup = 'Akademik & Sekolah';
 
+    protected static ?string $parentItem = 'Penilaian & Presensi';
+
     protected static ?string $navigationLabel = 'Nilai & Raport';
 
     protected static ?string $modelLabel = 'Nilai';
 
     protected static ?string $pluralModelLabel = 'Nilai Siswa';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $form): Schema
     {

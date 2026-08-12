@@ -23,7 +23,9 @@ class NavigationMenuResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-bars-3';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Tampilan & Navigasi';
+    protected static \UnitEnum|string|null $navigationGroup = 'Sistem & Keamanan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $modelLabel = 'Menu Navigasi';
 

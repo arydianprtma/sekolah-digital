@@ -22,7 +22,9 @@ class LibraryBookResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-book-open';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'Perpustakaan';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Keuangan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Katalog Buku';
 
@@ -30,7 +32,7 @@ class LibraryBookResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Koleksi Buku';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $form): Schema
     {

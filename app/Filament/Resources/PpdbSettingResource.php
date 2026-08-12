@@ -22,7 +22,9 @@ class PpdbSettingResource extends Resource
 
     protected static \BackedEnum|string|null $navigationIcon = 'heroicon-o-academic-cap';
 
-    protected static \UnitEnum|string|null $navigationGroup = 'PPDB & Digital';
+    protected static \UnitEnum|string|null $navigationGroup = 'Layanan & Keuangan';
+
+    protected static ?string $parentItem = null;
 
     protected static ?string $navigationLabel = 'Pengaturan PPDB';
 
@@ -30,7 +32,7 @@ class PpdbSettingResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Pengaturan PPDB';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $form): Schema
     {
